@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRoulette } from "contexts/RouletteContext";
 
 import * as SC from "./styles";
-import { RouletteVirtualFloor } from "@doubledice/platform/lib/graph";
+import { RouletteVirtualFloor } from "../../doubledice/platform/lib/graph";
 
 enum BetOutcomes {
   FIRST_ROW,

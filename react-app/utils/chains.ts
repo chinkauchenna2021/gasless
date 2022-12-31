@@ -4,7 +4,7 @@ import { AddEthereumChainParameter } from "@web3-react/types";
 import { WalletConnect } from "@web3-react/walletconnect";
 import networkConfig from "config/networkConfig";
 import { ethers } from "ethers";
-import { EncodedVirtualFloorMetadataStruct } from "lib/generated/typechain-types/artifacts/contracts/DoubleDiceProtocol";
+import { EncodedVirtualFloorMetadataStruct } from "../components/layouts/doubledice/platform/lib/generated/typechain-types/artifacts/contracts/DoubleDiceProtocol";
 import { convertNumToHexdecimal } from "utils/helpers";
 
 export const ETH: AddEthereumChainParameter["nativeCurrency"] = {

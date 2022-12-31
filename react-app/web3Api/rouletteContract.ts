@@ -3,8 +3,8 @@ import {
   DummyUSDCoin__factory,
   RouletteDoubleDiceApp__factory,
   VRFCoordinatorV2Mock__factory,
-} from "@doubledice/platform/lib/contracts";
-import { RouletteSessionCreationParamsStruct } from "@doubledice/platform/lib/generated/typechain-types/artifacts/contracts/app/roulette/RouletteDoubleDiceApp";
+} from "../components/layouts/doubledice/platform/lib/contracts";
+import { RouletteSessionCreationParamsStruct } from "../components/layouts/doubledice/platform/lib/generated/typechain-types/artifacts/contracts/app/roulette/RouletteDoubleDiceApp";
 import { TransactionResponse } from "@ethersproject/providers";
 import networkConfig from "config/networkConfig";
 import { BigNumber, BigNumberish } from "ethers";

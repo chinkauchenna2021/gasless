@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { BigNumber, BigNumberish } from "ethers";
-import type { RouletteSessionCreationParamsStruct } from "lib/generated/typechain-types/artifacts/contracts/app/roulette/RouletteDoubleDiceApp";
+import type { RouletteSessionCreationParamsStruct } from "../components/layouts/doubledice/platform/lib/generated/typechain-types/artifacts/contracts/app/roulette/RouletteDoubleDiceApp";
+
 import { $ } from "utils/helpers";
 import {
   claimPayouts,
