@@ -186,7 +186,7 @@ useEffect(()=>{
         //  setResponse(relayResponse?.taskId)
          console.log(relayResponse?.taskId)
 
-          // router.push("/");
+          router.push("/");
       } catch (err: any) {
         console.log('err', err)
         alert(err.message);
