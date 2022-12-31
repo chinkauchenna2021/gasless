@@ -17,6 +17,7 @@
     "@graphql-codegen/typescript": "^2.7.4",
     "@graphql-codegen/typescript-operations": "^2.5.4",
     "@graphql-codegen/typescript-react-apollo": "^3.3.4",
+    "@netlify/plugin-nextjs": "^4.29.4",
     "@walletconnect/ethereum-provider": "^1.8.0",
     "@web3-react/core": "8.0.33-beta.0",
     "@web3-react/metamask": "8.0.26-beta.0",

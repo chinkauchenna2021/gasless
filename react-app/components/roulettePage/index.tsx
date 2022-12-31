@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { RouletteVirtualFloor } from "@doubledice/platform/lib/graph";
+import { RouletteVirtualFloor } from "../layouts/doubledice/platform/lib/graph";
 import { ROULETTE_VIRTUALFLOOR } from "graphql/queries";
 import { useRouter } from "next/router";
 

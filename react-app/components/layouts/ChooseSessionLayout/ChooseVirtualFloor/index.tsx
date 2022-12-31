@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { RouletteVirtualFloor } from "@doubledice/platform/lib/graph";
+import { RouletteVirtualFloor } from "../../doubledice/platform/lib/graph";
 import { ROULETTE_SESSIONS_VIRTUALFLOOR } from "graphql/queries";
 import { useRouter } from "next/router";
 import { convertTimestampToDate } from "utils/helpers";

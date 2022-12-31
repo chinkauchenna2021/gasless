@@ -11,17 +11,7 @@ import type {
 const _abi = [
   {
     inputs: [],
-    name: "BetaOpenTooSmall",
-    type: "error",
-  },
-  {
-    inputs: [],
     name: "CreationFeeRateTooLarge",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "InvalidTimeline",
     type: "error",
   },
   {
@@ -34,10 +24,15 @@ const _abi = [
     name: "NotEnoughOutcomes",
     type: "error",
   },
+  {
+    inputs: [],
+    name: "TooManyOutcomes",
+    type: "error",
+  },
 ];
 
 const _bytecode =
-  "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220fb87579e2f2e5a38d8c88a9d1bd8820ba362f4553f5284fd0f6008d3011eec7164736f6c634300080c0033";
+  "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220c30cb16794c7447ff67042d973e7a23b13b303c075bc765070d56e1fedeb913164736f6c634300080c0033";
 
 type VirtualFloorCreationParamsUtilsConstructorParams =
   | [signer?: Signer]

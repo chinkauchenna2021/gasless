@@ -13,6 +13,26 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "LinkTokenInterface",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.LinkTokenInterface__factory>;
+    getContractFactory(
+      name: "VRFCoordinatorV2Interface",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFCoordinatorV2Interface__factory>;
+    getContractFactory(
+      name: "VRFCoordinatorV2Mock",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFCoordinatorV2Mock__factory>;
+    getContractFactory(
+      name: "VRFConsumerBaseV2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFConsumerBaseV2__factory>;
+    getContractFactory(
+      name: "ERC2771Context",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC2771Context__factory>;
+    getContractFactory(
       name: "AccessControlUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AccessControlUpgradeable__factory>;
@@ -105,29 +125,41 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
-      name: "BaseDoubleDice",
+      name: "BaseClassicDoubleDiceApp",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BaseDoubleDice__factory>;
+    ): Promise<Contracts.BaseClassicDoubleDiceApp__factory>;
     getContractFactory(
       name: "ChallengeableCreatorOracle",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ChallengeableCreatorOracle__factory>;
     getContractFactory(
+      name: "ClassicDoubleDiceApp",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ClassicDoubleDiceApp__factory>;
+    getContractFactory(
       name: "CreationQuotas",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CreationQuotas__factory>;
+    getContractFactory(
+      name: "RandomDoubleDiceApp",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.RandomDoubleDiceApp__factory>;
+    getContractFactory(
+      name: "RouletteDoubleDiceApp",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.RouletteDoubleDiceApp__factory>;
     getContractFactory(
       name: "DummyERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.DummyERC20__factory>;
     getContractFactory(
+      name: "DummyLinkToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DummyLinkToken__factory>;
+    getContractFactory(
       name: "DummyUSDCoin",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.DummyUSDCoin__factory>;
-    getContractFactory(
-      name: "DummyUSDTether",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.DummyUSDTether__factory>;
     getContractFactory(
       name: "DummyWrappedBTC",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -157,9 +189,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FixedPointTypesMock__factory>;
     getContractFactory(
-      name: "DoubleDice",
+      name: "DoubleDiceProtocol",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.DoubleDice__factory>;
+    ): Promise<Contracts.DoubleDiceProtocol__factory>;
     getContractFactory(
       name: "ForkedERC1155UpgradeableV4_5_2",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -168,6 +200,18 @@ declare module "hardhat/types/runtime" {
       name: "GraphHelper",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GraphHelper__factory>;
+    getContractFactory(
+      name: "IDoubleDiceApplication",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IDoubleDiceApplication__factory>;
+    getContractFactory(
+      name: "BaseRngApp",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BaseRngApp__factory>;
+    getContractFactory(
+      name: "ChainlinkVRFv2SubscriptionManager",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ChainlinkVRFv2SubscriptionManager__factory>;
     getContractFactory(
       name: "FixedPointTypes",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -181,10 +225,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.VirtualFloorCreationParamsUtils__factory>;
     getContractFactory(
-      name: "VirtualFloorMetadataValidator",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.VirtualFloorMetadataValidator__factory>;
-    getContractFactory(
       name: "ProxyAdmin",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ProxyAdmin__factory>;
@@ -193,6 +233,31 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TransparentUpgradeableProxy__factory>;
 
+    getContractAt(
+      name: "LinkTokenInterface",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.LinkTokenInterface>;
+    getContractAt(
+      name: "VRFCoordinatorV2Interface",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFCoordinatorV2Interface>;
+    getContractAt(
+      name: "VRFCoordinatorV2Mock",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFCoordinatorV2Mock>;
+    getContractAt(
+      name: "VRFConsumerBaseV2",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFConsumerBaseV2>;
+    getContractAt(
+      name: "ERC2771Context",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC2771Context>;
     getContractAt(
       name: "AccessControlUpgradeable",
       address: string,
@@ -309,35 +374,50 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
-      name: "BaseDoubleDice",
+      name: "BaseClassicDoubleDiceApp",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.BaseDoubleDice>;
+    ): Promise<Contracts.BaseClassicDoubleDiceApp>;
     getContractAt(
       name: "ChallengeableCreatorOracle",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ChallengeableCreatorOracle>;
     getContractAt(
+      name: "ClassicDoubleDiceApp",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ClassicDoubleDiceApp>;
+    getContractAt(
       name: "CreationQuotas",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.CreationQuotas>;
+    getContractAt(
+      name: "RandomDoubleDiceApp",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.RandomDoubleDiceApp>;
+    getContractAt(
+      name: "RouletteDoubleDiceApp",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.RouletteDoubleDiceApp>;
     getContractAt(
       name: "DummyERC20",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.DummyERC20>;
     getContractAt(
+      name: "DummyLinkToken",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DummyLinkToken>;
+    getContractAt(
       name: "DummyUSDCoin",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.DummyUSDCoin>;
-    getContractAt(
-      name: "DummyUSDTether",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.DummyUSDTether>;
     getContractAt(
       name: "DummyWrappedBTC",
       address: string,
@@ -374,10 +454,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.FixedPointTypesMock>;
     getContractAt(
-      name: "DoubleDice",
+      name: "DoubleDiceProtocol",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.DoubleDice>;
+    ): Promise<Contracts.DoubleDiceProtocol>;
     getContractAt(
       name: "ForkedERC1155UpgradeableV4_5_2",
       address: string,
@@ -388,6 +468,21 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.GraphHelper>;
+    getContractAt(
+      name: "IDoubleDiceApplication",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IDoubleDiceApplication>;
+    getContractAt(
+      name: "BaseRngApp",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BaseRngApp>;
+    getContractAt(
+      name: "ChainlinkVRFv2SubscriptionManager",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ChainlinkVRFv2SubscriptionManager>;
     getContractAt(
       name: "FixedPointTypes",
       address: string,
@@ -403,11 +498,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.VirtualFloorCreationParamsUtils>;
-    getContractAt(
-      name: "VirtualFloorMetadataValidator",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.VirtualFloorMetadataValidator>;
     getContractAt(
       name: "ProxyAdmin",
       address: string,

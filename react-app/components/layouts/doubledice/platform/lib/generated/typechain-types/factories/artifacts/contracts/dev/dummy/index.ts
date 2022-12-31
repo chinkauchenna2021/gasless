@@ -2,6 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export { DummyERC20__factory } from "./DummyERC20__factory";
+export { DummyLinkToken__factory } from "./DummyLinkToken__factory";
 export { DummyUSDCoin__factory } from "./DummyUSDCoin__factory";
-export { DummyUSDTether__factory } from "./DummyUSDTether__factory";
 export { DummyWrappedBTC__factory } from "./DummyWrappedBTC__factory";

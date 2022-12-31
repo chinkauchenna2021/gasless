@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { encodeRouletteVirtualFloorMetadata } from "@doubledice/platform/lib/contracts";
+import { encodeRouletteVirtualFloorMetadata } from "../../../layouts/doubledice/platform/lib/contracts";
 import { useAccount } from "contexts/AccountContext";
 import { BigNumber, BytesLike, ethers } from "ethers";
 import { useRouter } from "next/router";
 import { $ } from "utils/helpers";
 import { toTimestamp } from "utils/toTimestamp";
 import { createSession } from "web3Api/rouletteContract";
-import RouletteDoubleDiceApp from   "@doubledice/platform/generated/abi/RouletteDoubleDiceApp.json"
+import RouletteDoubleDiceApp from   "../../../layouts/doubledice/platform/generated/abi/RouletteDoubleDiceApp.json"
 import { GelatoRelay, SponsoredCallERC2771Request } from "@gelatonetwork/relay-sdk";
 
 import CreateSessionInput from "../CreateSessionInput";

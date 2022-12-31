@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { RouletteSession } from "@doubledice/platform/lib/graph";
+import { RouletteSession } from "../../../layouts/doubledice/platform/lib/graph";
 import { useRoulette } from "contexts/RouletteContext";
 import { ROULETTE_SESSIONS } from "graphql/queries";
 import { useRouter } from "next/router";
 import { convertTimestampToDate } from "utils/helpers";
 import  DummyUSDTethers from '../../../layouts/doubledice/platform/artifacts/contracts/dev/dummy/DummyUSDTether.sol/DummyUSDTether.json';
 import { GelatoRelay, SponsoredCallERC2771Request } from "@gelatonetwork/relay-sdk";
-import RouletteDoubleDiceApp from   "@doubledice/platform/generated/abi/RouletteDoubleDiceApp.json"
+import RouletteDoubleDiceApp from   "../../../layouts/doubledice/platform/generated/abi/RouletteDoubleDiceApp.json"
 // import DoublediceAbi from "../../../layouts/doubledice/platform/artifacts/contracts/DoubleDice.sol/DoubleDice.json"
 
 import * as SC from "./styles";

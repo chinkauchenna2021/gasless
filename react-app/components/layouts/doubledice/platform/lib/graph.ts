@@ -6,11 +6,23 @@ import assert from 'assert';
 import { BigNumber as BigDecimal } from 'bignumber.js';
 import { BigNumber as EthersBigInteger } from 'ethers';
 import {
+  ClassicVirtualFloor as ClassicVirtualFloorEntity,
   Outcome as OutcomeEntity,
-  VirtualFloor as VirtualFloorEntity,
+  RandomVirtualFloor as RandomVirtualFloorEntity,
+  RouletteVirtualFloor as RouletteVirtualFloorEntity,
   VirtualFloorState as VirtualFloorEntityState
 } from './generated/graphql';
 import { VirtualFloorState as ContractVirtualFloorState } from './helpers/sol-enums';
+
+// Note: By using this union-type instead of the standard VirtualFloor interface,
+// if we check __typename === 'ClassicVirtualFloor' then TypeScript knows that we are dealing with a ClassicVirtualFloor,
+// and if we e.g. have a switch statement on __typename and we have already ruled out ClassicVirtualFloor, then
+// TypeScript can deduce that it is a RandomVirtualFloor or RouletteVirtualFloor
+// The idea would be to keep this union-type up to date every time a new VirtualFloor type is introduced.
+export type ClassicOrRandomVirtualFloorEntity =
+  | Required<ClassicVirtualFloorEntity> // `Required` to make __typename required
+  | Required<RandomVirtualFloorEntity>
+  | Required<RouletteVirtualFloorEntity>
 
 // e.g. sum([1, 2, 3, 4]) => 10
 export const sum = (values: number[]): number => values.reduce((a, b) => a + b)
@@ -29,7 +41,7 @@ export interface PreparedClaim {
 const MISSING = undefined;
 const BLANK = null; // e.g. winnerOutome is "blank" when VF is not yet resolved
 
-export const prepareVirtualFloorClaim = (vf: Partial<VirtualFloorEntity>): PreparedClaim | null => {
+export const prepareVirtualFloorClaim = (vf: Partial<ClassicOrRandomVirtualFloorEntity>): PreparedClaim | null => {
   // Assert that the fields have been included in the query
   assert(vf.state !== MISSING, 'Missing field: VirtualFloor.state');
   assert(vf.winningOutcome !== MISSING, 'Missing field: VirtualFloor.winningOutcome');
@@ -135,7 +147,7 @@ export const prepareVirtualFloorClaim = (vf: Partial<VirtualFloorEntity>): Prepa
 /**
  * Mirrors logic in VirtualFloors.sol
  */
-export const computeContractVirtualFloorState = (vf: VirtualFloorEntity, timestamp: number): ContractVirtualFloorState => {
+export const computeContractVirtualFloorState = (vf: ClassicOrRandomVirtualFloorEntity, timestamp: number): ContractVirtualFloorState => {
   // ensure fields have been included on query
   assert(vf.tClose !== undefined);
   assert(vf.tResolve !== undefined);

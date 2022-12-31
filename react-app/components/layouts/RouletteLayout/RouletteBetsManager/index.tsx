@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { prepareVirtualFloorClaim, RouletteVirtualFloor, User, VirtualFloor, VirtualFloorClaimType } from "@doubledice/platform/lib/graph";
+import { prepareVirtualFloorClaim, RouletteVirtualFloor, User, VirtualFloor, VirtualFloorClaimType } from "../../../layouts/doubledice/platform/lib/graph";
 import assert from "assert";
 import { BigNumber as BigDecimal } from "bignumber.js";
 import { useAccount } from "contexts/AccountContext";
@@ -11,11 +11,11 @@ import { convertNumToBigInt, formatTimestamp, getSystemTimestamp, VirtualFloorSt
 import { claimPayouts, claimRefunds, commitToSpin, CommitToSpinParams, getUsdcBalance, getVirtualFloorState, resolveSpin } from "web3Api/rouletteContract";
 import { $ } from "utils/helpers";
 import { GelatoRelay, SponsoredCallERC2771Request } from "@gelatonetwork/relay-sdk";
-import RouletteDoubleDiceApp from   "@doubledice/platform/generated/abi/RouletteDoubleDiceApp.json"
+import RouletteDoubleDiceApp from   "../../../layouts/doubledice/platform/generated/abi/RouletteDoubleDiceApp.json"
 import * as SC from "./styles";
 import { Web3Provider } from "@ethersproject/providers";
 import  DummyUSDTethers from '../../../layouts/doubledice/platform/artifacts/contracts/dev/dummy/DummyUSDTether.sol/DummyUSDTether.json';
-import DoublediceAbi from '@doubledice/platform/artifacts/contracts/DoubleDiceProtocol.sol/DoubleDiceProtocol.json'
+import DoublediceAbi from '../../../layouts/doubledice/platform/artifacts/contracts/DoubleDiceProtocol.sol/DoubleDiceProtocol.json'
 interface IProps {
   virtualFloor: RouletteVirtualFloor
 }

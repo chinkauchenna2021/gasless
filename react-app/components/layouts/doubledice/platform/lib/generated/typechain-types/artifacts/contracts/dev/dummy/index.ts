@@ -2,6 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { DummyERC20 } from "./DummyERC20";
+export type { DummyLinkToken } from "./DummyLinkToken";
 export type { DummyUSDCoin } from "./DummyUSDCoin";
-export type { DummyUSDTether } from "./DummyUSDTether";
 export type { DummyWrappedBTC } from "./DummyWrappedBTC";
