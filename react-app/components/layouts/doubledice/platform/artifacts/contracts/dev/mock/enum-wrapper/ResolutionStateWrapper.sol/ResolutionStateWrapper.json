@@ -1,0 +1,76 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ResolutionStateWrapper",
+  "sourceName": "contracts/dev/mock/enum-wrapper/ResolutionStateWrapper.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "ChallengeCancelled",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResolutionState",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "Challenged",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResolutionState",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "Complete",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResolutionState",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "None",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResolutionState",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "Set",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResolutionState",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b5060e98061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060505760003560e01c806301b7dcb41460555780632081e91114607057806331234354146077578063391b338914607e578063d26e2de9146085575b600080fd5b605c600481565b60405160679190608c565b60405180910390f35b605c600181565b605c600081565b605c600381565b605c600281565b602081016005831060ad57634e487b7160e01b600052602160045260246000fd5b9190529056fea26469706673582212203ab31a96aec4ae9afc7b420b8002d808d818e55bb03a0eff9e07e4bbf0b4947364736f6c634300080c0033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060505760003560e01c806301b7dcb41460555780632081e91114607057806331234354146077578063391b338914607e578063d26e2de9146085575b600080fd5b605c600481565b60405160679190608c565b60405180910390f35b605c600181565b605c600081565b605c600381565b605c600281565b602081016005831060ad57634e487b7160e01b600052602160045260246000fd5b9190529056fea26469706673582212203ab31a96aec4ae9afc7b420b8002d808d818e55bb03a0eff9e07e4bbf0b4947364736f6c634300080c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

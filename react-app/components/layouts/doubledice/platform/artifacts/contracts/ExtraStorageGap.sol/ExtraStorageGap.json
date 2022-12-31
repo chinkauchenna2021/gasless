@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ExtraStorageGap",
+  "sourceName": "contracts/ExtraStorageGap.sol",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea264697066735822122086f6883e6b3da6a7ba068398a34392c2f95d13a758d87bf2280473d45346e70864736f6c634300080c0033",
+  "deployedBytecode": "0x6080604052600080fdfea264697066735822122086f6883e6b3da6a7ba068398a34392c2f95d13a758d87bf2280473d45346e70864736f6c634300080c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

@@ -1,0 +1,285 @@
+import chai, { expect } from 'chai';
+import chaiSubset from 'chai-subset';
+import { BigNumber } from 'ethers';
+import { ethers } from 'hardhat';
+import {
+  $,
+  DoubleDiceDeploymentHelper,
+  DoubleDicePlatformHelper,
+  ENCODED_DUMMY_METADATA,
+  EvmCheckpoint,
+  EvmHelper,
+  generateRandomVirtualFloorId, SignerWithAddress,
+  toFp18,
+  toTimestamp,
+  UNSPECIFIED_COMMITMENT_DEADLINE,
+  UserCommitment
+} from '../../helpers';
+import {
+  ClassicDoubleDiceApp,
+  DoubleDiceProtocol,
+  DummyUSDCoin, DummyWrappedBTC,
+  VirtualFloorCreationParamsStruct,
+  VirtualFloorState
+} from '../../lib/contracts';
+
+chai.use(chaiSubset);
+
+let helper: DoubleDicePlatformHelper;
+
+const totalFeeRate_e18 = 50000_000000_000000n; // 0.05 = 5%
+
+describe('DoubleDice/Resolve', function () {
+  let ownerSigner: SignerWithAddress;
+  let protocolFeeBeneficiarySigner: SignerWithAddress;
+  let user1Signer: SignerWithAddress;
+  let user2Signer: SignerWithAddress;
+  let user3Signer: SignerWithAddress;
+  let contract: DoubleDiceProtocol;
+  let appContract: ClassicDoubleDiceApp;
+  let token: DummyUSDCoin | DummyWrappedBTC;
+  let paymentTokenAddress: string;
+  let evm: EvmHelper;
+
+  before(async function () {
+    evm = new EvmHelper(ethers.provider);
+
+    [
+      ownerSigner,
+      protocolFeeBeneficiarySigner,
+      user1Signer,
+      user2Signer,
+      user3Signer,
+    ] = await ethers.getSigners();
+
+    const deploymentHelper = new DoubleDiceDeploymentHelper(ownerSigner);
+
+    token = await deploymentHelper.deployDummyUSDCoin();
+
+    await deploymentHelper.deployProxyAdmin();
+
+    contract = await deploymentHelper.deployUpgradeableDoubleDiceProtocol({
+      constructorArgs: [],
+      initializerArgs: [{
+        tokenMetadataUriTemplate: 'http://localhost:8080/token/{id}',
+        protocolFeeRate_e18: toFp18(0.50),
+        protocolFeeBeneficiary: protocolFeeBeneficiarySigner.address,
+        contractURI: 'http://localhost:8080/contract-metadata.json'
+      }]
+    });
+
+    appContract = await deploymentHelper.deployUpgradeableClassicDoubleDiceApp({
+      constructorArgs: [contract.address, token.address],
+      initializerArgs: [],
+    });
+
+    await deploymentHelper.setup({ protocol: contract, classicApp: appContract });
+
+    expect(await contract.platformFeeRate_e18()).to.eq(500000_000000_000000n);
+
+    helper = new DoubleDicePlatformHelper(contract, appContract);
+
+    // Assert fee beneficiary
+    expect(await contract.platformFeeBeneficiary()).to.eq(protocolFeeBeneficiarySigner.address);
+
+    {
+      expect(
+        await contract.isPaymentTokenWhitelisted(token.address)
+      ).to.be.false;
+      await (
+        await contract
+          .connect(ownerSigner)
+          .updatePaymentTokenWhitelist(token.address, true)
+      ).wait();
+      expect(
+        await contract.isPaymentTokenWhitelisted(token.address)
+      ).to.be.true;
+      paymentTokenAddress = token.address;
+    }
+  });
+
+  describe('Resolve Virtual Floor', function () {
+    // Random virtual floor for each test case
+    const vfId = generateRandomVirtualFloorId();
+    const vfId2 = generateRandomVirtualFloorId();
+    const allWinnersVf = generateRandomVirtualFloorId();
+    const tOpen = toTimestamp('2031-06-01T12:00:00');
+    const tClose = toTimestamp('2032-01-01T12:00:00');
+    const tResolve = toTimestamp('2032-01-02T00:00:00');
+    const nOutcomes = 3;
+    const betaOpen_e18 = BigNumber.from(10)
+      .pow(18)
+      .mul(13); // 1 unit per hour
+
+    let user1CommitmentEventArgs: UserCommitment;
+    let user2CommitmentEventArgs: UserCommitment;
+    let user3CommitmentEventArgs: UserCommitment;
+
+    let virtualFloorCreationParams: VirtualFloorCreationParamsStruct;
+
+    before(async () => {
+      virtualFloorCreationParams = {
+        vfId,
+        betaOpen_e18,
+        totalFeeRate_e18,
+        tOpen,
+        tClose,
+        tResolve,
+        nOutcomes,
+        paymentToken: paymentTokenAddress,
+        bonusAmount: 0,
+        optionalMinCommitmentAmount: 0,
+        optionalMaxCommitmentAmount: 0,
+        metadata: ENCODED_DUMMY_METADATA,
+        creator: ownerSigner.address,
+      };
+
+      // Mint 1000$ to each user
+      await (
+        await token.connect(ownerSigner).mint(user1Signer.address, $(1000))
+      ).wait();
+      await (
+        await token.connect(ownerSigner).mint(user2Signer.address, $(1000))
+      ).wait();
+      await (
+        await token.connect(ownerSigner).mint(user3Signer.address, $(1000))
+      ).wait();
+
+      // Allow the contract to transfer up to 100$ from each user
+      await (
+        await token.connect(user1Signer).approve(contract.address, $(100))
+      ).wait();
+      await (
+        await token.connect(user2Signer).approve(contract.address, $(100))
+      ).wait();
+      await (
+        await token.connect(user3Signer).approve(contract.address, $(100))
+      ).wait();
+
+      await (
+        await appContract.createVirtualFloor({
+          ...virtualFloorCreationParams,
+          paymentToken: paymentTokenAddress,
+        })
+      ).wait();
+      await (
+        await appContract.createVirtualFloor({
+          ...virtualFloorCreationParams,
+          vfId: vfId2,
+          paymentToken: paymentTokenAddress,
+        })
+      ).wait();
+      await (
+        await appContract.createVirtualFloor({
+          ...virtualFloorCreationParams,
+          vfId: allWinnersVf,
+          paymentToken: paymentTokenAddress,
+        })
+      ).wait();
+
+      user1CommitmentEventArgs = await helper.commitToVirtualFloor(vfId, [0], user1Signer, [$(10)], UNSPECIFIED_COMMITMENT_DEADLINE);
+      user2CommitmentEventArgs = await helper.commitToVirtualFloor(vfId, [1], user2Signer, [$(10)], UNSPECIFIED_COMMITMENT_DEADLINE);
+      user3CommitmentEventArgs = await helper.commitToVirtualFloor(vfId, [1], user3Signer, [$(10)], UNSPECIFIED_COMMITMENT_DEADLINE);
+
+      await helper.commitToVirtualFloor(allWinnersVf, [1], user1Signer, [$(10)], UNSPECIFIED_COMMITMENT_DEADLINE);
+      await helper.commitToVirtualFloor(allWinnersVf, [1], user2Signer, [$(10)], UNSPECIFIED_COMMITMENT_DEADLINE);
+      await helper.commitToVirtualFloor(allWinnersVf, [1], user3Signer, [$(10)], UNSPECIFIED_COMMITMENT_DEADLINE);
+    });
+
+    it('Should revert if VF / market does not exist', async function () {
+      const inexistentVfId = '0x00000000000000000000000000000000000000000000000000dead0000000000';
+      await expect(appContract.setResult(inexistentVfId, 1)).to.be.revertedWith(`WrongVirtualFloorState(${VirtualFloorState.None})`);
+    });
+
+    it('Should revert if resolve time has not reached', async function () {
+
+      // Commit to 2 outcomes so that VF resolution fails because too early,
+      // and not because it is unresolvable.
+      await (await appContract.connect(user1Signer).commitToVirtualFloor(vfId2, [0], [1], UNSPECIFIED_COMMITMENT_DEADLINE)).wait();
+      await (await appContract.connect(user2Signer).commitToVirtualFloor(vfId2, [1], [1], UNSPECIFIED_COMMITMENT_DEADLINE)).wait();
+
+      await expect(appContract.setResult(vfId2, 1)).to.be.revertedWith(`WrongVirtualFloorState(${VirtualFloorState.Active_Open_ResolvableLater})`);
+    });
+
+    it('Should revert if the provided outcome index is out of the VF outcomes', async function () {
+      const checkpoint = await EvmCheckpoint.create();
+      await evm.setNextBlockTimestamp(tResolve);
+      await expect(appContract.setResult(vfId2, 4)).to.be.revertedWith('OutcomeIndexOutOfRange()');
+      await checkpoint.revertTo();
+    });
+
+    it('Should revert if VF is already on resolved state', async function () {
+      const checkpoint = await EvmCheckpoint.create();
+      await evm.setNextBlockTimestamp(tResolve);
+
+      await helper.setResultThenLaterConfirmUnchallengedResult(ownerSigner, vfId2, 1);
+
+      await expect(appContract.setResult(vfId2, 1)).to.be.revertedWith(`WrongVirtualFloorState(${VirtualFloorState.Claimable_Payouts})`);
+      await checkpoint.revertTo();
+    });
+
+    it('Should cancel VF and set resolution type to No Winners when total commitments for the resolution index is 0', async function () {
+      const checkpoint = await EvmCheckpoint.create();
+      const { amount: amount0 } = await contract.getVirtualFloorOutcomeTotals(vfId, 0);
+      expect(amount0).to.be.gt(0);
+      const { amount: amount1 } = await contract.getVirtualFloorOutcomeTotals(vfId, 1);
+      expect(amount1).to.be.gt(0);
+      const { amount: amount2 } = await contract.getVirtualFloorOutcomeTotals(vfId, 2);
+      expect(amount2).to.be.eq(0);
+
+      await evm.setNextBlockTimestamp(tResolve);
+      await helper.setResultThenLaterConfirmUnchallengedResult(ownerSigner, vfId, 2);
+
+      expect(await contract.getVirtualFloorState(vfId)).to.be.eq(VirtualFloorState.Claimable_Refunds_ResolvedNoWinners);
+      await checkpoint.revertTo();
+    });
+
+    it('Should fail with WrongVirtualFloorState(ClosedUnresolvable) when total commits of the VF is equal to winner commitments', async function () {
+      const checkpoint = await EvmCheckpoint.create();
+      const vfAggregateCommitments = await contract.getVirtualFloorOutcomeTotals(
+        allWinnersVf,
+        1
+      );
+      expect(vfAggregateCommitments.amount).to.be.eq($(10).mul(3));
+
+      await evm.setNextBlockTimestamp(tResolve);
+
+      await expect(appContract.setResult(allWinnersVf, 1)).to.be.revertedWith(`WrongVirtualFloorState(${VirtualFloorState.Active_Closed_ResolvableNever})`);
+
+      await (await contract.cancelVirtualFloorUnresolvable(allWinnersVf)).wait();
+
+      expect(await contract.getVirtualFloorState(allWinnersVf)).to.be.eq(VirtualFloorState.Claimable_Refunds_ResolvableNever);
+      await checkpoint.revertTo();
+    });
+
+    it(`Should set VF state to completed as well as resolution type to
+        some winners and set winnerProfits, transfer to
+        the feeBeneficary the fee amount and emit correct event with
+        VirtualFloorResolution with right parameters`, async function () {
+      const checkpoint = await EvmCheckpoint.create();
+      const balanceOfFeeBeneficaryBefore = await token.balanceOf(
+        protocolFeeBeneficiarySigner.address
+      );
+
+      await evm.setNextBlockTimestamp(tResolve);
+
+      const [VFResolutionEventArgs] = await helper.setResultThenLaterConfirmUnchallengedResult(ownerSigner, vfId, 1);
+
+      const balanceOfFeeBeneficaryAfter = await token.balanceOf(
+        protocolFeeBeneficiarySigner.address
+      );
+
+      expect(await contract.getVirtualFloorState(vfId)).to.be.eq(VirtualFloorState.Claimable_Payouts);
+
+      expect(balanceOfFeeBeneficaryAfter.toNumber()).to.be.gt(
+        balanceOfFeeBeneficaryBefore.toNumber()
+      );
+
+      expect(VFResolutionEventArgs.vfId).to.eq(vfId);
+      expect(VFResolutionEventArgs.winningOutcomeIndexFlags).to.eq(0b10);
+
+      await checkpoint.revertTo();
+    });
+
+  });
+});

@@ -1,0 +1,32 @@
+{
+  "extends": "next/core-web-vitals",
+  "plugins": ["react", "simple-import-sort", "@typescript-eslint"],
+  "rules": {
+    "react-hooks/exhaustive-deps": 0,
+    "simple-import-sort/exports": 0,
+    "no-unused-expressions": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          // Packages `react` related packages come first.
+          ["^react", "^@?\\w"],
+          // Internal packages.
+          ["^(@|components)(/.*|$)"],
+          // Side effect imports.
+          ["^\\u0000"],
+          // Parent imports. Put `..` last.
+          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+          // Other relative imports. Put same-folder imports and `.` last.
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+          // Style imports.
+          ["^.+\\.?(css)$"]
+        ]
+      }
+    ]
+  },
+  "ignorePatterns": ["lib/", "utils/notify.ts"],
+  "reportUnusedDisableDirectives": true
+}

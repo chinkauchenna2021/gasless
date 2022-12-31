@@ -1,0 +1,37 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "VirtualFloorResolutionTypeWrapper",
+  "sourceName": "contracts/dev/mock/enum-wrapper/VirtualFloorResolutionTypeWrapper.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "NoWinners",
+      "outputs": [
+        {
+          "internalType": "enum BaseDoubleDice.VirtualFloorResolutionType",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "Winners",
+      "outputs": [
+        {
+          "internalType": "enum BaseDoubleDice.VirtualFloorResolutionType",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b5060b68061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80633728feb31460375780639951a417146052575b600080fd5b603e600081565b604051604991906059565b60405180910390f35b603e600181565b6020810160028310607a57634e487b7160e01b600052602160045260246000fd5b9190529056fea2646970667358221220c1608a46380c6ea18cbe460fc8949d6aee0529b171b36346ceeb647e4078dfee64736f6c634300080c0033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060325760003560e01c80633728feb31460375780639951a417146052575b600080fd5b603e600081565b604051604991906059565b60405180910390f35b603e600181565b6020810160028310607a57634e487b7160e01b600052602160045260246000fd5b9190529056fea2646970667358221220c1608a46380c6ea18cbe460fc8949d6aee0529b171b36346ceeb647e4078dfee64736f6c634300080c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

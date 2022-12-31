@@ -1,0 +1,76 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ResultUpdateActionWrapper",
+  "sourceName": "contracts/dev/mock/enum-wrapper/ResultUpdateActionWrapper.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "CreatorSetResult",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResultUpdateAction",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "OperatorFinalizedChallenge",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResultUpdateAction",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "OperatorFinalizedUnsetResult",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResultUpdateAction",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SomeoneChallengedSetResult",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResultUpdateAction",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SomeoneConfirmedUnchallengedResult",
+      "outputs": [
+        {
+          "internalType": "enum ChallengeableCreatorOracle.ResultUpdateAction",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b5060e98061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060505760003560e01c80634059e50e14605557806367755cda1460705780636f5b0aed1460775780637d5c23d514607e578063e8c4df4c146085575b600080fd5b605c600181565b60405160679190608c565b60405180910390f35b605c600481565b605c600281565b605c600081565b605c600381565b602081016005831060ad57634e487b7160e01b600052602160045260246000fd5b9190529056fea26469706673582212208cd0d2dbf4f5fe53fce5d5e7626d9a2752f4832b7621d19843113b1bd48999c964736f6c634300080c0033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060505760003560e01c80634059e50e14605557806367755cda1460705780636f5b0aed1460775780637d5c23d514607e578063e8c4df4c146085575b600080fd5b605c600181565b60405160679190608c565b60405180910390f35b605c600481565b605c600281565b605c600081565b605c600381565b602081016005831060ad57634e487b7160e01b600052602160045260246000fd5b9190529056fea26469706673582212208cd0d2dbf4f5fe53fce5d5e7626d9a2752f4832b7621d19843113b1bd48999c964736f6c634300080c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

@@ -1,0 +1,14 @@
+{
+  "name": "doubledice",
+  "private": true,
+  "scripts": {
+    "clean": "lerna clean",
+    "init": "lerna bootstrap",
+    "start": "docker-compose up --build --renew-anon-volumes",
+    "stop": "docker-compose down --volumes",
+    "dev:graph:redeploy": "docker-compose run --workdir /dev_workdir/platform dev npm run graph:all:docker"
+  },
+  "devDependencies": {
+    "lerna": "4.0.0"
+  }
+}

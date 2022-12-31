@@ -1,0 +1,10 @@
+{
+  "packages": [
+    "platform",
+    "app",
+    "server",
+    "autotasks",
+    "react-app"
+  ],
+  "version": "0.1.0"
+}

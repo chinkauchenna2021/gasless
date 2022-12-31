@@ -1,0 +1,399 @@
+scalar BigDecimal
+scalar BigInt
+scalar Bytes
+# References:
+# - https://thegraph.com/docs/developer/assemblyscript-api
+# - https://thegraph.academy/developers/defining-a-subgraph/
+# - https://dev.to/dabit3/building-graphql-apis-on-ethereum-4poa
+# - https://github.com/ensdomains/ens-subgraph
+# - https://github.com/graphprotocol/dharma-subgraph
+
+type Category @entity {
+  id: ID!
+  slug: String! @deprecated(reason: "Use `id`")
+
+  # children
+  subcategories: [Subcategory!]! @derivedFrom(field: "category")
+  virtualFloors: [VirtualFloor!]! @derivedFrom(field: "category")
+}
+
+type Subcategory @entity {
+  """
+  Unique across all categories.
+  Currently formed by combining `subcategory.category.id + '/' + subcategory.subid`,
+  but this could change, so frontend code should treat this as an opaque string.
+  """
+  id: ID!
+
+  # parents
+  category: Category!
+
+  # children
+  virtualFloors: [VirtualFloor!]! @derivedFrom(field: "subcategory")
+
+  # properties
+
+  """Unique only within the parent category."""
+  subid: String!
+
+  slug: String! @deprecated(reason: "Use `subid`")
+}
+
+enum VirtualFloorState {
+  Active_ResultNone,                   # formerly RUNNING_OR_CLOSED__RESULT_NONE
+  Active_ResultSet,                    # formerly RUNNING_OR_CLOSED__RESULT_SET
+  Active_ResultChallenged,             # formerly RUNNING_OR_CLOSED__RESULT_CHALLENGED
+  Claimable_Refunds_ResolvableNever,   # formerly CANCELLED_BECAUSE_UNRESOLVABLE
+  Claimable_Refunds_ResolvedNoWinners, # formerly CANCELLED_BECAUSE_RESOLVED_NO_WINNERS
+  Claimable_Refunds_Flagged,           # formerly CANCELLED_BECAUSE_FLAGGED
+  Claimable_Payouts                    # formerly RESOLVED_WINNERS
+}
+
+enum ResultUpdateAction {
+  AdminFinalizedUnsetResult,
+  CreatorSetResult,
+  SomeoneConfirmedUnchallengedResult,
+  SomeoneChallengedSetResult,
+  AdminFinalizedChallenge
+}
+
+type VirtualFloor @entity {
+  id: ID!
+
+  intId: BigInt!
+
+  # parents
+
+  creator: User!
+  owner: User! @deprecated(reason: "Use `creator`")
+
+  subcategory: Subcategory!
+  category: Category!
+
+  """Optional: Only set if the result set by the creator has been challenged"""
+  challenger: User
+
+  # children
+  userVirtualFloors: [UserVirtualFloor!]! @derivedFrom(field: "virtualFloor")
+  outcomes: [Outcome!]! @derivedFrom(field: "virtualFloor")
+  opponents: [Opponent!]! @derivedFrom(field: "virtualFloor")
+  resultSources: [ResultSource!]! @derivedFrom(field: "virtualFloor")
+
+  # properties (event)
+  paymentToken: PaymentToken!
+  betaOpen: BigDecimal!
+
+  totalFeeRate: BigDecimal!
+  creationFeeRate: BigDecimal! @deprecated(reason: "Use `totalFeeRate`")
+
+  protocolFeeRate: BigDecimal!
+  platformFeeRate: BigDecimal! @deprecated(reason: "Use `protocolFeeRate`")
+
+  # Ideally tx hash and timestamp would be grouped together into a single structure.
+  # However, doing so would make it impossible to filter by create-time or by resolve-time,
+  # for example. So they are kept as top-level properties.  
+  creationTxHash: Bytes!
+  creationTxTimestamp: BigInt!
+  tCreated: BigInt! @deprecated(reason: "Use `creationTxTimestamp`")
+
+  tOpen: BigInt!
+  tClose: BigInt!
+  tResolve: BigInt!
+  bonusAmount: BigDecimal!
+
+  optionalMinCommitmentAmount: BigDecimal
+  optionalMaxCommitmentAmount: BigDecimal
+
+  minCommitmentAmount: BigDecimal! @deprecated(reason: "Use `optionalMinCommitmentAmount`")
+  maxCommitmentAmount: BigDecimal! @deprecated(reason: "Not good for comparison to MaxUint256; use `optionalMaxCommitmentAmount`")
+
+  """Optional: Only set if VF has been resolved or cancelled."""
+  resolutionOrCancellationTxHash: Bytes
+  """Optional: Only set if VF has been resolved or cancelled."""
+  resolutionOrCancellationTxTimestamp: BigInt
+
+  """
+  In current ChallengeableCreatorOracle resolution implementation, this may seem redundant as it is always equal to `tResolve`.
+  However this might not hold for alternative resolution implementations.
+  `tResolve` is a core property of the VF, whereas `tResultSetMin` is specific to `ChallengeableCreatorOracle`.
+  """
+  tResultSetMin: BigInt!
+
+  # ToDo: Emit per-VF as VirtualFloorCreated event field
+  """Optional: Only set once SET_WINDOW starts ticking."""
+  tResultSetMax: BigInt!
+
+  # ToDo: Emit per-VF as VirtualFloorCreated event field
+  """Optional: Only set once CHALLENGE_WINDOW starts ticking."""
+  tResultChallengeMax: BigInt
+
+  state: VirtualFloorState!
+
+  """Optional: Only set if VF is resolved."""
+  winningOutcome: Outcome   
+
+  """
+  Total commitments to all outcomes + bonus amount - fees.
+  Optional: Only set if VF is resolved.
+  """
+  winnerProfits: BigDecimal # Optional: Only set if VF is resolved
+
+  """Optional: Only set if VF is cancelled because it was flagged."""
+  flaggingReason: String
+
+  """Optional: Only set if VF result has been every set by anyone."""
+  resultUpdateAction: ResultUpdateAction 
+
+  # properties (ipfs)
+  title: String!
+  description: String!
+  isListed: Boolean!
+  discordChannelId: String!
+
+  isTest: Boolean!
+
+  # aggregates
+  totalSupply: BigDecimal!
+
+  # Instead of using Graph's [fulltext](https://thegraph.com/docs/en/developer/create-subgraph-hosted/#defining-fulltext-search-fields) functionality,
+  # we manually combine all fields and subfields into a single top-level field that we can then search using `allText_contains_nocase`, as:
+  # 1. native fulltext feature cannot search subfields anyway
+  # 2. we retain more control over how the results are ordered
+  # 3. we don't really need to be able to rank results by text relevance
+  allText: String!
+}
+
+type Opponent @entity {
+  id: ID!
+
+  # parents
+  virtualFloor: VirtualFloor!
+
+  # properties
+  title: String!
+  image: String!
+}
+
+type ResultSource @entity {
+  id: ID!
+
+  # parents
+  virtualFloor: VirtualFloor!
+
+  # properties
+  title: String!
+  url: String!
+}
+
+type Outcome @entity {
+  id: ID!
+
+  # parents
+  virtualFloor: VirtualFloor!
+
+  # children
+  outcomeTimeslots: [OutcomeTimeslot!]! @derivedFrom(field: "outcome")
+  userOutcomeTimeslots: [UserOutcomeTimeslot!]! @derivedFrom(field: "outcome")
+  userOutcomes: [UserOutcome!]! @derivedFrom(field: "outcome")
+
+  # properties
+  title: String!
+  index: Int!
+
+  """Total amount over all commitments to this VF outcome."""
+  totalSupply: BigDecimal!
+
+  """Total amount×beta over all commitments to this VF outcome."""
+  totalWeightedSupply: BigDecimal!
+}
+
+type User @entity {
+  id: ID!
+
+  # children
+  userVirtualFloors: [UserVirtualFloor!]! @derivedFrom(field: "user")
+  userOutcomeTimeslots: [UserOutcomeTimeslot!]! @derivedFrom(field: "user")
+  userOutcomes: [UserOutcome!]! @derivedFrom(field: "user")
+  outcomeTimeslotTransfersTo: [OutcomeTimeslotTransfer!]! @derivedFrom(field: "to")
+  outcomeTimeslotTransfersFrom: [OutcomeTimeslotTransfer!]! @derivedFrom(field: "from")
+
+  createdVirtualFloors: [VirtualFloor!]! @derivedFrom(field: "creator")
+  ownedVirtualFloors: [VirtualFloor!]! @derivedFrom(field: "owner") @deprecated(reason: "Use `createdVirtualFloors`")
+
+  challengedVirtualFloors: [VirtualFloor!]! @derivedFrom(field: "challenger")
+
+  roleUsers: [RoleUser!]! @derivedFrom(field: "user")
+
+  # properties
+  maxConcurrentVirtualFloors: BigInt!
+  concurrentVirtualFloors: BigInt!
+}
+
+type UserOutcome @entity {
+  id: ID!
+
+  # parents
+  user: User!
+  outcome: Outcome!
+  userVirtualFloor: UserVirtualFloor!
+
+  # children
+  userOutcomeTimeslots: [UserOutcomeTimeslot!]! @derivedFrom(field: "userOutcome")
+
+  # properties
+
+  """Mirrors on-chain ERC-1155 balance of this `User` summed over all `OutcomeTimeslot`s under this `Outcome`."""
+  totalBalance: BigDecimal!
+
+  totalWeightedBalance: BigDecimal!
+
+  totalClaimedBalance: BigDecimal!
+  totalBalancePlusTotalClaimedBalance: BigDecimal!
+}
+
+"""
+Groups commitments to a specific VF outcome that were made at a specific timeslot.
+Every OutcomeTimeslot has a unique ERC-1155 token-id on the DD contract.
+"""
+type OutcomeTimeslot @entity {
+  id: ID!
+
+  tokenId: BigInt!
+
+  # parents
+  outcome: Outcome!
+  timeslot: BigInt!
+
+  # children
+  userOutcomeTimeslots: [UserOutcomeTimeslot!]! @derivedFrom(field: "outcomeTimeslot")
+  outcomeTimeslotTransfers: [OutcomeTimeslotTransfer!]! @derivedFrom(field: "outcomeTimeslot")
+
+  # properties
+  totalSupply: BigDecimal!
+  beta: BigDecimal!
+}
+
+"""
+Groups commitments to a specific VF outcome that were made at a specific timeslot, for a specific user.
+Synonymous to the specific user’s ERC-1155 balance on the parent `OutcomeTimeslot`.
+"""
+type UserOutcomeTimeslot @entity {
+  id: ID!
+
+  # parents
+  user: User!
+  outcome: Outcome!
+  
+  outcomeTimeslot: OutcomeTimeslot!
+  userOutcome: UserOutcome!
+
+  # # children
+  # outcomeTimeslotTransfersFrom: [OutcomeTimeslotTransfer!]! @derivedFrom(field: "fromUserOutcomeTimeslot")
+  # outcomeTimeslotTransfersTo: [OutcomeTimeslotTransfer!]! @derivedFrom(field: "toUserOutcomeTimeslot")
+
+  # properties
+
+  """Mirrors on-chain ERC-1155 balance of this `User` on this `OutcomeTimeslot`."""
+  balance: BigDecimal!
+
+  claimedBalance: BigDecimal!
+  """
+  This will always be updated to be `= balance + claimedBalance`.
+  Since we cannot query Graph for entities that have balance_gt: 0 OR claimedBalance_gt: 0,
+  we work around it by quering for balancePlusClaimedBalance_gt: 0
+  """
+  balancePlusClaimedBalance: BigDecimal!
+}
+
+"""
+Represents a specific ERC-1155 TransferSingle event, incluing mints and burns.
+TransferBatch events are treated as a sequence of TransferSingle events.
+"""
+type OutcomeTimeslotTransfer @entity {
+  id: ID!
+
+  # parents
+  outcomeTimeslot: OutcomeTimeslot!
+  from: User!
+  to: User!
+  # fromUserOutcomeTimeslot: UserOutcomeTimeslot!
+  # toUserOutcomeTimeslot: UserOutcomeTimeslot!
+
+  # properties
+  txHash: Bytes!
+  txTimestamp: BigInt!
+  timestamp: BigInt! @deprecated(reason: "Use `txTimestamp`")
+
+  # """
+  # Position of the associated event log in the block.
+  
+  # All transfers could be sorted chronologically by ordering by `[timestamp, logIndex]`
+  # """
+  # logIndex: Int!
+
+  amount: BigDecimal!
+}
+
+"""ERC-20 token used as VF payment-tokens."""
+type PaymentToken @entity {
+  id: ID!
+
+  # properties
+  address: Bytes!
+  name: String!
+  symbol: String!
+  decimals: Int!
+
+  isWhitelisted: Boolean!
+  isTest: Boolean!
+}
+
+"""
+Holds totals in a singleton entity with special id 'singleton'.
+
+Like a database table with a single row.
+"""
+type VirtualFloorsAggregate @entity {
+  """Should be always 'singleton'"""
+  id: ID!
+
+  """The total number of VFs ever created."""
+  totalVirtualFloorsCreated: Int!
+
+}
+
+"""
+The user’s holdings on the VF.
+Once the user claims payouts or refunds, the corresponding balances still remain under the Vf
+and other the VfOutcome, but are transferred to `0x0000000000000000000000000000000000000000`.
+"""
+type UserVirtualFloor @entity {
+  id: ID!
+
+  # parents
+  user: User!
+  virtualFloor: VirtualFloor!
+
+  # children
+  userOutcomes: [UserOutcome!]! @derivedFrom(field: "userVirtualFloor")
+
+  # properties
+
+  """Mirrors on-chain ERC-1155 balance of this `User` summed over all `OutcomeTimeslot`s under all `Outcome`s under this VF."""
+  totalBalance: BigDecimal!
+
+  totalClaimedBalance: BigDecimal!
+  totalBalancePlusTotalClaimedBalance: BigDecimal!
+}
+
+
+type Role @entity {
+  id: ID!
+  roleUsers: [RoleUser!]! @derivedFrom(field: "role")
+}
+
+type RoleUser @entity {
+  id: ID!
+  role: Role!
+  user: User!
+}

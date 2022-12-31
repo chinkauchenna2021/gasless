@@ -1,0 +1,36 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "VirtualFloorCreationParamsUtils",
+  "sourceName": "contracts/library/VirtualFloorCreationParamsUtils.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "BetaOpenTooSmall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "CreationFeeRateTooLarge",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidTimeline",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidVirtualFloorId",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotEnoughOutcomes",
+      "type": "error"
+    }
+  ],
+  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220fb87579e2f2e5a38d8c88a9d1bd8820ba362f4553f5284fd0f6008d3011eec7164736f6c634300080c0033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220fb87579e2f2e5a38d8c88a9d1bd8820ba362f4553f5284fd0f6008d3011eec7164736f6c634300080c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

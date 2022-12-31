@@ -1,0 +1,5 @@
+DoubleDiceProtocol:   22119 bytes
+ClassicDoubleDiceApp: 14616 bytes
+RandomDoubleDiceApp:   5510 bytes
+RouletteDoubleDiceApp:   8256 bytes
+Limit:                24576 bytes
