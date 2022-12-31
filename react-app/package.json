@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",
-    "@doubledice/platform": "0.1.0",
     "@ethersproject/providers": "^5.7.1",
     "@ethersproject/units": "^5.7.0",
     "@gelatonetwork/relay-sdk": "^3.0.0",
